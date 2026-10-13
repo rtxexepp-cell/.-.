@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>อัยอ้วนน 💗</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Delius&family=Mali:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100svh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      font-family: "Mali", "Delius", cursive;
+      background: #6ce9e9;
+      animation: backgroundColor 8s ease-in-out infinite;
+    }
+
+    button {
+      font: inherit;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    @keyframes backgroundColor {
+      0%, 100% { background-color: #6ce9e9; }
+      25% { background-color: #75e784; }
+      50% { background-color: #7fffd4; }
+      75% { background-color: #ef9fc5; }
+    }
+
+    /* ฝนรูปภาพ */
+    .rain {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .drop {
+      position: absolute;
+      top: -160px;
+      left: var(--left);
+      width: var(--size);
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: zoom-in;
+      pointer-events: auto;
+      touch-action: manipulation;
+      animation: fall var(--duration) linear both;
+      animation-delay: var(--delay);
+      will-change: transform;
+    }
+
+    .drop img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 3px solid white;
+      border-radius: 9px;
+      box-shadow: 0 5px 15px #0003;
+      animation: wobble 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes fall {
+      from {
+        transform: translate3d(0, 0, 0)
+          rotate(var(--angle));
+        opacity: 0;
+      }
+
+      8%, 90% {
+        opacity: 0.9;
+      }
+
+      to {
+        transform: translate3d(
+          var(--drift),
+          calc(100vh + 340px),
+          0
+        ) rotate(var(--end-angle));
+        opacity: 0;
+      }
+    }
+
+    @keyframes wobble {
+      from { transform: rotate(-12deg); }
+      to { transform: rotate(12deg); }
+    }
+
+    /* รูปหมุนทั้งสามรูป */
+    .scene {
+      position: relative;
+      z-index: 2;
+      width: min(1100px, 94vw);
+      display: grid;
+      grid-template-columns: 1fr 1.5fr 1fr;
+      align-items: center;
+      gap: clamp(15px, 4vw, 65px);
+      pointer-events: none;
+    }
+
+    .center {
+      position: relative;
+      min-width: 0;
+      text-align: center;
+    }
+
+    h1 {
+      position: absolute;
+      top: -100px;
+      left: 50%;
+      width: max-content;
+      margin: 0;
+      color: white;
+      font-size: clamp(27px, 5vw, 52px);
+      text-shadow: 0 3px 0 #ee6395, 0 6px 15px #0002;
+      animation: titleBounce 1.2s ease-in-out infinite;
+      z-index: 3;
+    }
+
+    @keyframes titleBounce {
+      0%, 100% {
+        transform: translateX(-50%) translateY(0) rotate(-5deg);
+      }
+
+      50% {
+        transform: translateX(-50%) translateY(-12px) rotate(5deg);
+      }
+    }
+
+    .photo-button {
+      display: block;
+      width: 100%;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: zoom-in;
+      pointer-events: auto;
+      touch-action: manipulation;
+    }
+
+    .photo-button:focus-visible,
+    .drop:focus-visible {
+      outline: 4px solid #d6387b;
+      outline-offset: 6px;
+      border-radius: 14px;
+    }
+
+    .photo {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 5px solid white;
+      border-radius: 14px;
+      box-shadow: 0 12px 30px #0003;
+    }
+
+    .main-button {
+      width: fit-content;
+      max-width: 100%;
+      margin: auto;
+      animation: mainSpin 6s linear infinite;
+    }
+
+    .main-photo {
+      max-height: 48vh;
+      width: auto;
+      max-width: 100%;
+    }
+
+    .side {
+      min-width: 0;
+      animation: float 2.5s ease-in-out infinite;
+    }
+
+    .side-left .photo-button {
+      animation: sideSpin 4s linear infinite;
+    }
+
+    .side-right {
+      animation-delay: -1.25s;
+    }
+
+    .side-right .photo-button {
+      animation: sideSpin 4s linear infinite reverse;
+    }
+
+    @keyframes mainSpin {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.15); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    @keyframes sideSpin {
+      0% { transform: rotate(0deg) scale(0.9); }
+      50% { transform: rotate(180deg) scale(1.08); }
+      100% { transform: rotate(360deg) scale(0.9); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(-15px); }
+      50% { transform: translateY(15px); }
+    }
+
+    /* หยุดรูปเมื่อชี้เมาส์ เพื่อให้กดง่าย */
+    @media (hover: hover) {
+      .side:hover,
+      .side:hover .photo-button,
+      .main-button:hover,
+      .drop:hover,
+      .drop:hover img {
+        animation-play-state: paused;
+      }
+    }
+
+    .caption {
+      position: fixed;
+      bottom: 24px;
+      left: 0;
+      right: 0;
+      z-index: 3;
+      margin: 0;
+      text-align: center;
+      color: #713452;
+      font-size: clamp(14px, 3vw, 20px);
+      font-weight: 600;
+      pointer-events: none;
+    }
+
+    /* หน้าต่างดูรูปใหญ่ */
+    .viewer {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      max-height: none;
+      margin: 0;
+      padding: 20px;
+      border: 0;
+      background: transparent;
+      overflow: auto;
+    }
+
+    .viewer[open] {
+      display: grid;
+      place-items: center;
+    }
+
+    .viewer::backdrop {
+      background: rgb(30 12 27 / 78%);
+      backdrop-filter: blur(8px);
+    }
+
+    .viewer-card {
+      position: relative;
+      width: fit-content;
+      max-width: min(720px, 100%);
+      min-width: 0;
+      padding: 14px 14px 20px;
+      border-radius: 24px;
+      background: #fff6fa;
+      box-shadow: 0 20px 80px #0005;
+      text-align: center;
+      animation: zoomIn 0.25s ease-out;
+    }
+
+    .viewer-image {
+      display: block;
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 65vh;
+      max-height: 65svh;
+      margin: auto;
+      border-radius: 14px;
+      object-fit: contain;
+    }
+
+    .viewer-text {
+      margin: 16px 0 0;
+      color: #df518a;
+      font-size: clamp(22px, 4.5vw, 34px);
+      font-weight: 600;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .close-button {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: 2px solid white;
+      border-radius: 50%;
+      background: #ed6096;
+      color: white;
+      font-size: 30px;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 0 3px 12px #0003;
+    }
+
+    .close-button:hover {
+      background: #ce3972;
+    }
+
+    .close-button:focus-visible {
+      outline: 3px solid #713452;
+      outline-offset: 3px;
+    }
+
+    @keyframes zoomIn {
+      from {
+        opacity: 0;
+        transform: translateY(15px) scale(0.8);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* เปิดรูปใหญ่แล้วพักแอนิเมชันด้านหลัง */
+    body.viewing,
+    body.viewing .scene *,
+    body.viewing .drop,
+    body.viewing .drop img {
+      animation-play-state: paused !important;
+    }
+
+    @media (max-width: 600px) {
+      .scene {
+        width: 90vw;
+        gap: 15px;
+        grid-template-columns: 1fr 1.6fr 1fr;
+      }
+
+      .photo {
+        border-width: 3px;
+        border-radius: 9px;
+      }
+
+      h1 {
+        top: -85px;
+      }
+
+      .viewer-card {
+        padding: 10px 10px 18px;
+        border-radius: 18px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body,
+      .scene *,
+      .viewer-card {
+        animation: none !important;
+      }
+
+      h1 {
+        transform: translateX(-50%);
+      }
+
+      .rain {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="rain" id="rain" aria-hidden="true"></div>
+
+  <main class="scene">
+    <!-- รูปซ้าย -->
+    <div class="side side-left">
+      <button
+        class="photo-button"
+        type="button"
+        aria-label="ดูรูปซ้ายขนาดใหญ่"
+      >
+        <img
+          class="photo"
+          src="./photo1.jpg"
+          alt="รูปซ้าย"
+          draggable="false"
+        >
+      </button>
+    </div>
+
+    <!-- รูปกลาง -->
+    <div class="center">
+      <h1>อัยอ้วนน 💗</h1>
+
+      <button
+        class="photo-button main-button"
+        type="button"
+        aria-label="ดูรูปตรงกลางขนาดใหญ่"
+      >
+        <img
+          class="photo main-photo"
+          src="./mylove.png"
+          alt="อัยอ้วนน"
+          draggable="false"
+        >
+      </button>
+    </div>
+
+    <!-- รูปขวา -->
+    <div class="side side-right">
+      <button
+        class="photo-button"
+        type="button"
+        aria-label="ดูรูปขวาขนาดใหญ่"
+      >
+        <img
+          class="photo"
+          src="./photo2.jpg"
+          alt="รูปขวา"
+          draggable="false"
+        >
+      </button>
+    </div>
+  </main>
+
+  <p class="caption">ลองจิ้มรูปดูสิ 💗</p>
+
+  <dialog
+    class="viewer"
+    id="viewer"
+    aria-labelledby="viewerText"
+  >
+    <div class="viewer-card">
+      <button
+        class="close-button"
+        id="closeViewer"
+        type="button"
+        aria-label="ปิดรูป"
+        autofocus
+      >×</button>
+
+      <img
+        class="viewer-image"
+        id="viewerImage"
+        alt="คนน่ารัก"
+      >
+
+      <p class="viewer-text" id="viewerText">คนน่ารัก 💗</p>
+    </div>
+  </dialog>
+
+  <script>
+    const rain = document.getElementById("rain");
+    const viewer = document.getElementById("viewer");
+    const viewerImage = document.getElementById("viewerImage");
+    const viewerText = document.getElementById("viewerText");
+    const closeViewer = document.getElementById("closeViewer");
+
+    const photos = [
+      "./photo3.jpg",
+      "./photo4.jpg",
+      "./photo5.jpg",
+      "./photo6.jpg",
+      "./photo7.jpg"
+    ];
+
+    // แก้ข้อความของแต่ละรูปตรงนี้ได้เลย
+    const photoMessages = {
+      "photo1.jpg": "ไก่ที่น่ารักที่สุดในโลกกกก 🐣💗",
+      "photo2.jpg": "ไก่ที่น่ารักที่สุดในโลกกกก 🐣💗",
+      "photo3.jpg": "น่ารักสุุดดด 🥹💗",
+      "photo4.jpg": "น่ารักมากก ใจเจ็บหมดแล้วว 😭💕",
+      "photo5.jpg": "น่ารักเกินไปแล้ววว 🫠💖",
+      "photo6.jpg": "คนสวยของเค้าาา 🌷💗",
+      "photo7.jpg": "อัยอ้วนน ทำไมน่ารักขนาดนี้ 😽💞",
+      "mylove.png": "คนพิเศษ รักที่สุดเลยย 🫶💗"
+    };
+
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    );
+
+    function random(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    // เปิดรูปพร้อมข้อความประจำรูป
+    function openPhoto(src) {
+      if (viewer.open) return;
+
+      const url = new URL(src, document.baseURI);
+      const filename = decodeURIComponent(
+        url.pathname.split("/").pop()
+      );
+
+      const message = photoMessages[filename] || "คนน่ารัก 💗";
+
+      viewerImage.src = src;
+      viewerImage.alt = message;
+      viewerText.textContent = message;
+
+      document.body.classList.add("viewing");
+      viewer.showModal();
+    }
+
+    // กดรูปหมุนทั้งสามรูป
+    document.querySelectorAll(".photo-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        const img = button.querySelector("img");
+        openPhoto(img.currentSrc || img.src);
+      });
+    });
+
+    // กดกากบาทเพื่อปิด
+    closeViewer.addEventListener("click", () => {
+      viewer.close();
+    });
+
+    // กดพื้นหลังนอกรูปเพื่อปิด
+    viewer.addEventListener("click", (event) => {
+      if (event.target === viewer) {
+        viewer.close();
+      }
+    });
+
+    // ทำงานเมื่อปิดด้วยกากบาท พื้นหลัง หรือ Esc
+    viewer.addEventListener("close", () => {
+      document.body.classList.remove("viewing");
+      viewerImage.removeAttribute("src");
+    });
+
+    // กดรูปฝน
+    rain.addEventListener("click", (event) => {
+      const drop = event.target.closest(".drop");
+      if (!drop) return;
+
+      const img = drop.querySelector("img");
+      openPhoto(img.currentSrc || img.src);
+    });
+
+    function createDrop(startScattered = false) {
+      if (
+        reducedMotion.matches ||
+        viewer.open ||
+        rain.childElementCount >= 40
+      ) {
+        return;
+      }
+
+      const drop = document.createElement("button");
+      const img = document.createElement("img");
+
+      const duration = random(6, 11);
+      const isMobile = window.innerWidth < 600;
+      const size = isMobile ? random(40, 60) : random(45, 85);
+
+      drop.type = "button";
+      drop.className = "drop";
+      drop.tabIndex = -1;
+
+      drop.style.setProperty("--left", random(0, 90) + "%");
+      drop.style.setProperty("--size", size + "px");
+      drop.style.setProperty("--duration", duration + "s");
+
+      drop.style.setProperty(
+        "--delay",
+        startScattered ? -random(0, duration) + "s" : "0s"
+      );
+
+      drop.style.setProperty("--drift", random(-90, 90) + "px");
+      drop.style.setProperty("--angle", random(-40, 40) + "deg");
+      drop.style.setProperty("--end-angle", random(-180, 180) + "deg");
+
+      img.src = photos[Math.floor(Math.random() * photos.length)];
+      img.alt = "";
+      img.draggable = false;
+
+      // ไม่แสดงกรอบเสียหากหาไฟล์ไม่เจอ
+      img.addEventListener("error", () => drop.remove(), {
+        once: true
+      });
+
+      // หยุดรูปทันทีที่แตะ
+      drop.addEventListener("pointerdown", (event) => {
+        drop.style.animationPlayState = "paused";
+        img.style.animationPlayState = "paused";
+        drop.setPointerCapture(event.pointerId);
+      });
+
+      function resumeDrop() {
+        drop.style.animationPlayState = "";
+        img.style.animationPlayState = "";
+      }
+
+      drop.addEventListener("pointerup", resumeDrop);
+      drop.addEventListener("pointercancel", resumeDrop);
+      drop.addEventListener("lostpointercapture", resumeDrop);
+
+      drop.appendChild(img);
+      rain.appendChild(drop);
+
+      // ลบรูปที่ตกพ้นจอ ป้องกันสะสม
+      drop.addEventListener("animationend", (event) => {
+        if (event.target === drop) {
+          drop.remove();
+        }
+      });
+    }
+
+    // กระจายฝนตั้งแต่เปิดหน้า
+    for (let i = 0; i < 20; i++) {
+      createDrop(true);
+    }
+
+    // สร้างรูปฝนต่อเนื่อง
+    setInterval(() => {
+      if (!document.hidden) {
+        createDrop();
+      }
+    }, 350);
+  </script>
+</body>
+</html>
